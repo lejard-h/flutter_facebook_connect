@@ -14,13 +14,14 @@ class FacebookConnect {
   final FacebookOptions options;
   final String responseContent;
   final bool fullscreen;
+  final bool storeToken;
   final flutterWebviewPlugin = new FlutterWebviewPlugin();
 
   FacebookConnect(this.options,
-      {this.responseContent = "", this.fullscreen = false});
+      {this.responseContent = "", this.fullscreen = false, this.storeToken = true});
 
   Future<FacebookOAuthToken> login({bool force = false}) async {
-    if (force == false) {
+    if (force == false && storeToken) {
       _token = await _getStoredToken();
     }
 
@@ -60,14 +61,18 @@ class FacebookConnect {
       _code = await _onCode.first;
       _close();
       _token = await _getToken();
-      _storeToken();
+      if (storeToken) {
+        _storeToken();
+      }
     }
     return _token;
   }
 
   void revoke() {
     _token = null;
-    _storeToken();
+    if (storeToken) {
+      _storeToken();
+    }
     _code = null;
   }
 
