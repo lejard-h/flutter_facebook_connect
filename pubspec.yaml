@@ -1,0 +1,17 @@
+name: flutter_facebook_connect
+description: Facebook Connect for Flutter
+version: 0.0.1
+homepage: https://github.com/lejard-h/flutter_facebook_connect
+author: lejard_h <email@example.com>
+
+environment:
+  sdk: '>=1.20.1 <2.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_webview_plugin: '^0.0.5'
+  shared_preferences: '^0.2.4+1'
+
+dev_dependencies:
+  test: ^0.12.0
