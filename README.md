@@ -1,6 +1,6 @@
 # flutter_facebook_connect
 
-Facebook Connect for Flutter
+Facebook Connect for [Flutter](https://flutter.io)
 
 ## Usage
 
