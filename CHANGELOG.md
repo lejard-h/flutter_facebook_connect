@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.3
+
+- Add `FacebookLoginButton` Widget
+- Remove `FacebookOptions` class
+
 ## 0.0.2
 
 - Optional token storage

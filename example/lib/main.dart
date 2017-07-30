@@ -28,9 +28,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  FacebookConnect _facebookConnect = new FacebookConnect(const FacebookOptions(
-      appId: '<APP_ID>',
-      clientSecret: '<CLIENT_SECRET'));
+  FacebookConnect _connect;
 
   @override
   Widget build(BuildContext context) {
@@ -42,16 +40,24 @@ class _MyHomePageState extends State<MyHomePage> {
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              new RaisedButton(
-                  onPressed: () {
-                    _facebookConnect.login().then((FacebookOAuthToken token) {
-                      debugPrint(token.toMap().toString());
-                    });
-                  },
-                  child: new Text("Facebook Connect")),
+              new Container(
+                child: new Text(
+                    _connect?.token != null ? "connected" : "not connected"),
+                padding: new EdgeInsets.all(8.0),
+              ),
+              new FacebookLoginButton(
+                  appId: '<APP_ID>',
+                  clientSecret: '<CLIENT_SECRET>',
+                  scope: [FacebookAuthScope.publicProfile],
+                  onConnect: (api, token) {
+                    _connect = api;
+                    print(token);
+                    setState(() {});
+                  }),
               new FlatButton(
                   onPressed: () {
-                    _facebookConnect.revoke();
+                    _connect?.logout();
+                    setState(() {});
                   },
                   child: new Text("Logout"))
             ],

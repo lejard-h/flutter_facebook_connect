@@ -4,3 +4,4 @@
 library flutter_facebook_connect;
 
 export 'src/flutter_facebook_connect_base.dart';
+export 'src/facebook_login_button.dart';

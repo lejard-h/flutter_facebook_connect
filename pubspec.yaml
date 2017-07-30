@@ -1,8 +1,8 @@
 name: flutter_facebook_connect
 description: Facebook Connect for Flutter
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/lejard-h/flutter_facebook_connect
-author: lejard_h <email@example.com>
+author: lejard_h <hadrien.lejard@gmail.com>
 
 environment:
   sdk: '>=1.20.1 <2.0.0'

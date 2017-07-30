@@ -2,6 +2,9 @@
 
 Facebook Connect for [Flutter](https://flutter.io)
 
+Easy way to connect users to Facebook inside your application via [OAuth2](https://developers.facebook.com/docs/facebook-login)
+
+
 ## Usage
 
 See configuration for [flutter_webview_plugin](https://github.com/dart-flitter/flutter_webview_plugin)
@@ -33,12 +36,25 @@ Add following lines to Info.plist
 
 #### Dart Code
 
+
+Using `FacebookConnect` class
 ```dart
-final _facebookConnect = new FacebookConnect(const FacebookOptions(
+final _facebookConnect = new FacebookConnect(
           appId: '<APP_ID>',
-          clientSecret: '<CLIENT_SECRET'));
+          clientSecret: '<CLIENT_SECRET');
 
 FacebookOAuthToken token = await _facebookConnect.login();
+```
+
+Using `FacebookLoginButton` widget
+```dart
+ new FacebookLoginButton(
+          appId: '<APP_ID>',
+          clientSecret: '<CLIENT_SECRET>',
+          scope: [FacebookAuthScope.publicProfile],
+          onConnect: (api, token) {
+           ...
+          }),
 ```
 
 ## Features and bugs
