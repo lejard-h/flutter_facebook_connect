@@ -49,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   appId: '<APP_ID>',
                   clientSecret: '<CLIENT_SECRET>',
                   scope: [FacebookAuthScope.publicProfile],
+                  cookie: false,
                   onConnect: (api, token) {
                     _connect = api;
                     print(token);

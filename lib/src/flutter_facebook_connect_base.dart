@@ -24,12 +24,11 @@ class FacebookConnect {
   FacebookConnect._({this.appId, this.clientSecret, this.version});
 
   factory FacebookConnect(
-      {@required String appId,
-      @required String clientSecret,
-      String version = 'v2.10'}) {
-    return _instance ??= new FacebookConnect._(
-        appId: appId, clientSecret: clientSecret, version: version);
-  }
+          {@required String appId,
+          @required String clientSecret,
+          String version = 'v2.10'}) =>
+      _instance ??= new FacebookConnect._(
+          appId: appId, clientSecret: clientSecret, version: version);
 
   /// Log user to Facebook using a webview
   ///
@@ -110,10 +109,10 @@ class FacebookConnect {
 
   String _code;
   FacebookOAuthToken _token;
-  StreamController<String> _onCodeCtrl;
+  final _onCodeCtrl = new StreamController<String>.broadcast();
   bool _isOpen = false;
   HttpServer _server;
-  Stream<String> _onCodeStream;
+  StreamSubscription _serverListener;
 
   Future<FacebookOAuthToken> _requestToken() async {
     final http.Response response = await http.get(
@@ -126,43 +125,46 @@ class FacebookConnect {
     return null;
   }
 
-  Future _storeToken() async {
+  Future<bool> _storeToken() async {
+    if (_token == null) {
+      return _storeTokenValue("");
+    }
+    return _storeTokenValue(JSON.encode(_token.toMap()));
+  }
+
+  Future<bool> _storeTokenValue(String value) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString(_kFacebookConnectTokenKey,
-          _token != null ? JSON.encode(_token.toMap()) : null);
-      await prefs.commit();
+      prefs.setString(_kFacebookConnectTokenKey, value);
+      return await prefs.commit();
     } catch (e) {
       print(e);
     }
+    return false;
   }
 
   bool _shouldRequestCode({bool force = false}) =>
       _token == null || force == true;
 
-  Stream<String> get _onCode =>
-      _onCodeStream ??= _onCodeCtrl.stream.asBroadcastStream();
+  Stream<String> get _onCode => _onCodeCtrl.stream;
 
   void _close([_]) {
     if (_isOpen) {
       // close server
       _server.close(force: true);
-      _onCodeCtrl.close();
+      _serverListener?.cancel();
 
       flutterWebviewPlugin.close();
     }
     _isOpen = false;
   }
 
-  Future<HttpServer> _createServer() async {
-    final server = await HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, 8080,
-        shared: true);
-    return server;
-  }
+  Future<HttpServer> _createServer() =>
+      HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, 8080, shared: true);
 
-  _listenCode(HttpServer server) {
-    _onCodeCtrl = new StreamController();
-    server.listen((HttpRequest request) async {
+  void _listenCode(HttpServer server) {
+    _serverListener?.cancel();
+    _serverListener = server.listen((HttpRequest request) async {
       final uri = request.uri;
       request.response
         ..statusCode = 200
@@ -179,6 +181,11 @@ class FacebookConnect {
         _onCodeCtrl.addError(error);
       }
     });
+  }
+
+  void dispose() {
+    _close();
+    _onCodeCtrl.close();
   }
 }
 
@@ -202,50 +209,92 @@ class FacebookAuthScope {
   static String get publicProfile => "public_profile";
 
   static String get userFriends => "user_friends";
+
   static String get email => "email";
+
   static String get userAboutMe => "user_about_me";
+
   static String get userActionsBooks => "user_actions.books";
+
   static String get userActionsFitness => "user_actions.fitness";
+
   static String get userActionsMusic => "user_actions.music ";
+
   static String get userActionsNews => "user_actions.news";
+
   static String get userActionsVideo => "user_actions.video";
+
   static String get userBirthday => "user_birthday";
+
   static String get userEducationHistory => "user_education_history";
+
   static String get userEvents => "user_events";
+
   static String get userGamesActivity => "user_games_activity";
+
   static String get userHometown => "user_hometown";
+
   static String get userLikes => "user_likes";
+
   static String get userLocation => "user_location";
+
   static String get userManagedGroups => "user_managed_groups";
+
   static String get userPhotos => "user_photos";
+
   static String get userPosts => "user_posts";
+
   static String get userRelationships => "user_relationships";
+
   static String get userRelationshipDetails => "user_relationship_details";
+
   static String get userReligion_politics => "user_religion_politics";
+
   static String get userTaggedPlaces => "user_tagged_places";
+
   static String get userVideos => "user_videos";
+
   static String get userWebsite => "user_website";
+
   static String get userWork_history => "user_work_history";
+
   static String get readCustomFriendlists => "read_custom_friendlists";
+
   static String get readInsights => "read_insights";
+
   static String get readAudienceNetworkInsights =>
       "read_audience_network_insights";
+
   static String get readPageMailboxes => "read_page_mailboxes";
+
   static String get managePages => "manage_pages";
+
   static String get publishPages => "publish_pages";
+
   static String get publishActions => "publish_actions";
+
   static String get rsvpEvent => "rsvp_event";
+
   static String get pagesShowList => "pages_show_list";
+
   static String get pagesManageCta => "pages_manage_cta";
+
   static String get pagesManageInstantArticles =>
       "pages_manage_instant_articles";
+
   static String get adsRead => "ads_read";
+
   static String get adsManagement => "ads_management";
+
   static String get businessManagement => "business_management";
+
   static String get pagesMessaging => "pages_messaging";
+
   static String get pagesMessagingSubscriptions =>
       "pages_messaging_subscriptions";
+
   static String get pagesMessagingPayments => "pages_messaging_payments";
+
   static String get pagesMessagingPhoneNumber => "pages_messaging_phone_number";
 
   static String userActions(String appNamespace) =>

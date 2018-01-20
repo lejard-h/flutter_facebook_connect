@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.4
+
+- fix #4
+- fix facebook logo size
+
 ## 0.0.3
 
 - Add `FacebookLoginButton` Widget

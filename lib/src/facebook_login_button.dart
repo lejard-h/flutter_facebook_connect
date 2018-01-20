@@ -3,7 +3,7 @@ import 'package:flutter_facebook_connect/flutter_facebook_connect.dart';
 
 typedef OnConnect(FacebookConnect api, FacebookOAuthToken token);
 
-class FacebookLoginButton extends StatelessWidget {
+class FacebookLoginButton extends StatefulWidget {
   final FacebookConnect facebookConnect;
   final String text;
   final bool force;
@@ -32,6 +32,12 @@ class FacebookLoginButton extends StatelessWidget {
         super(key: key);
 
   @override
+  _FacebookLoginButtonState createState() => new _FacebookLoginButtonState();
+}
+
+class _FacebookLoginButtonState extends State<FacebookLoginButton> {
+  @override
+  @override
   Widget build(BuildContext context) {
     var btn = new RaisedButton(
         child: new Container(
@@ -41,8 +47,9 @@ class FacebookLoginButton extends StatelessWidget {
                 image: new NetworkImage(
                     "https://fr.facebookbrand.com/wp-content/uploads/2016/05/FB-fLogo-Blue-broadcast-2.png"),
               ),
+              constraints: new BoxConstraints(maxHeight: 28.0),
               margin: new EdgeInsets.only(right: 8.0)),
-          new Text(text, style: new TextStyle(color: Colors.white)),
+          new Text(widget.text, style: new TextStyle(color: Colors.white)),
         ], mainAxisAlignment: MainAxisAlignment.center)),
         onPressed: _onPressed,
         color: new Color.fromARGB(255, 59, 89, 152));
@@ -54,14 +61,20 @@ class FacebookLoginButton extends StatelessWidget {
   }
 
   _onPressed() async {
-    FacebookOAuthToken token = await facebookConnect.login(
-        force: force,
-        fullscreen: fullscreen,
-        scope: scope,
-        cookie: cookie,
-        storeToken: storeToken);
-    if (onConnect != null) {
-      onConnect(facebookConnect, token);
+    FacebookOAuthToken token = await widget.facebookConnect.login(
+        force: widget.force,
+        fullscreen: widget.fullscreen,
+        scope: widget.scope,
+        cookie: widget.cookie,
+        storeToken: widget.storeToken);
+    if (widget.onConnect != null) {
+      widget.onConnect(widget.facebookConnect, token);
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.facebookConnect.dispose();
   }
 }
