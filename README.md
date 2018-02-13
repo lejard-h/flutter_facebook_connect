@@ -1,5 +1,10 @@
 # flutter_facebook_connect
 
+
+**DISCLAIMER**
+
+**No maintenance on this package anymore. Prefer to use [flutter_facebook_login](https://github.com/roughike/flutter_facebook_login)**
+
 Facebook Connect for [Flutter](https://flutter.io)
 
 Easy way to connect users to Facebook inside your application via [OAuth2](https://developers.facebook.com/docs/facebook-login)
